@@ -9,7 +9,13 @@ $routes->get('/', 'Home::index');
 
 $routes->post('send-otp', 'OtpController::sendOtp');
 $routes->post('verify-otp', 'OtpController::verifyOtp');
-$routes->get('/docs', 'DocsController::index');
+$routes->get('api/docs/otp', 'DocsController::index');
+$routes->get('api/docs/user', 'DocsController::userDoc');
+$routes->get('api/docs/plan', 'DocsController::plansDoc');
+$routes->get('api/docs/payment', 'DocsController::paymentsDoc');
+
+
+
 
 
 $routes->group('api/languages', ['namespace' => 'App\Controllers'], function ($routes) {
