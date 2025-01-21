@@ -59,4 +59,37 @@ class PlanController extends ResourceController
 
         return $this->respond($plan);
     }
+
+    public function editPlan($id = null)
+{
+    $planModel = new PlanModel();
+
+    // Find the existing plan
+    $plan = $planModel->find($id);
+    if (!$plan) {
+        return $this->failNotFound("Plan with ID $id not found.");
+    }
+
+    // Get JSON input
+    $data = $this->request->getJSON(true);
+
+    // Validate input
+    if (!$this->validate([
+        'no_of_coins' => 'required|integer|greater_than[0]',
+        'amount' => 'required|decimal|greater_than[0]',
+    ])) {
+        return $this->failValidationErrors($this->validator->getErrors());
+    }
+
+    // Update the plan
+    if (!$planModel->update($id, $data)) {
+        return $this->failServerError('Failed to update plan.');
+    }
+
+    return $this->respond([
+        'message' => 'Plan updated successfully.',
+        'plan_id' => $id,
+    ]);
+}
+
 }

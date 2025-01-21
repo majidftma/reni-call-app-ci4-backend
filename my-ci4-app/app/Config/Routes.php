@@ -15,7 +15,23 @@ $routes->get('api/docs/plan', 'DocsController::plansDoc');
 $routes->get('api/docs/payment', 'DocsController::paymentsDoc');
 
 
+$routes->group('admin', ['namespace' => 'App\Controllers\admin'], function ($routes) {
+    $routes->get('/', 'AdminController::index');
+    $routes->get('login', 'AdminController::login');
+    $routes->post('authenticate', 'AdminController::authenticate');
+    $routes->get('logout', 'AdminController::logout');
+    $routes->post('create', 'AdminController::createAdmin'); // Route to create an admin
+});
 
+$routes->group('admin', ['namespace' => 'App\Controllers\admin'], function ($routes) {
+    $routes->get('plans', 'AdminController::getPlans');
+    $routes->get('plans/create', 'AdminController::postPlans');
+    $routes->post('plans/store', 'AdminController::store');
+});
+
+
+
+$routes->get('setup/create-admin', 'SetupController::createAdmin');
 
 
 $routes->group('api/languages', ['namespace' => 'App\Controllers'], function ($routes) {
