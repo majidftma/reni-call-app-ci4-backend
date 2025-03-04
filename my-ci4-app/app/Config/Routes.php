@@ -23,10 +23,23 @@ $routes->group('admin', ['namespace' => 'App\Controllers\admin'], function ($rou
     $routes->post('create', 'AdminController::createAdmin'); // Route to create an admin
 });
 
-$routes->group('admin', ['namespace' => 'App\Controllers\admin'], function ($routes) {
-    $routes->get('plans', 'AdminController::getPlans');
-    $routes->get('plans/create', 'AdminController::postPlans');
-    $routes->post('plans/store', 'AdminController::store');
+$routes->group('admin', ['namespace' => 'App\Controllers', 'filter' => 'auth'], function ($routes) {
+    $routes->get('dashboard', 'admin\AdminController::index');
+    $routes->get('settings', 'admin\AdminController::settings');
+
+
+
+    $routes->get('plans', 'admin\AdminController::getPlans');
+    $routes->get('plans/create', 'admin\AdminController::postPlans');
+    $routes->post('plans/store', 'admin\AdminController::store');
+    $routes->get('plans/delete/(:num)', 'PlanController::delete/$1');
+    $routes->get('plans/edit/(:num)', 'PlanController::edit/$1');
+    $routes->post('plans/update/(:num)', 'PlanController::update/$1');
+
+
+
+    $routes->get('users', 'admin\AdminController::getUsers');
+
 });
 
 

@@ -56,7 +56,9 @@
     padding: 20px;
     background-color: #f4f4f4;
 }
-
+table{
+    width:100%;
+}
     </style>
 </head>
 <body>

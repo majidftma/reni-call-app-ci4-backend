@@ -60,6 +60,43 @@ class PlanController extends ResourceController
         return $this->respond($plan);
     }
 
+    public function edit($id = null)
+    {
+        $planModel = new PlanModel();
+        $data['plan'] = $planModel->find($id);
+
+        if (!$data['plan']) {
+            return redirect()->to('/admin/plans')->with('error', 'Plan not found.');
+        }
+
+        return view('admin/plans/edit_plan', $data);
+    }
+
+    public function update($id = null)
+    {
+        $planModel = new PlanModel();
+
+        // Validate input
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'no_of_coins' => 'required',
+            'amount' => 'required|numeric',
+        ]);
+
+        if (!$this->validate($validation->getRules())) {
+            return redirect()->back()->withInput()->with('error', 'Please check your input.');
+        }
+
+        // Update plan details
+        $planModel->update($id, [
+            'no_of_coins' => $this->request->getPost('no_of_coins'),
+            'amount' => $this->request->getPost('amount'),
+            // 'status' => $this->request->getPost('status'),
+        ]);
+
+        return redirect()->to('/admin/plans')->with('success', 'Plan updated successfully.');
+    } 
+
     public function editPlan($id = null)
 {
     $planModel = new PlanModel();
@@ -92,4 +129,29 @@ class PlanController extends ResourceController
     ]);
 }
 
+    public function delete($id=null)
+    {
+        $planModel = new PlanModel();
+
+        // Check if the plan exists
+        $plan = $planModel->find($id);
+
+        if (!$plan) {
+            return redirect()->to('/admin/plans')->with('error', 'Plan not found.');
+        }
+
+        // Delete the plan
+       /* if ($planModel->delete($id)) {
+            return redirect()->to('/admin/plans')->with('success', 'Plan deleted successfully.');
+        } else {
+            return redirect()->to('/admin/plans')->with('error', 'Failed to delete the plan.');
+        } */ 
+
+         // Set status to 0 instead of deleting
+            if ($planModel->update($id, ['status' => 0])) {
+                return redirect()->to('/admin/plans')->with('success', 'Plan deactivated successfully.');
+            } else {
+                return redirect()->to('/admin/plans')->with('error', 'Failed to deactivate the plan.');
+            }
+    }
 }

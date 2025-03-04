@@ -14,16 +14,19 @@
         <tr>
             <th>ID</th>
             <th>Price</th>
-            <th>Duration (days)</th>
+            <th>No. of Coins</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($plans as $plan): ?>
+        <?php $ctr= 0 ; foreach ($plans as $plan): $ctr++; ?>
         <tr>
-            <td><?= $plan['id'] ?></td>
+            <td><?= $ctr ?></td>
             <td><?= $plan['amount'] ?></td>
             <td><?= $plan['no_of_coins'] ?></td>
+            <td><?= ($plan['status'] == 1) ? 'Active' : 'Inactive' ?></td>
+
             <td>
                 <a href="<?= base_url('admin/plans/edit/' . $plan['id']) ?>">Edit</a>
                 <a href="<?= base_url('admin/plans/delete/' . $plan['id']) ?>" onclick="return confirm('Are you sure?')">Delete</a>

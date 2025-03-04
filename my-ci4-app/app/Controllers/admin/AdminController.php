@@ -5,16 +5,22 @@ namespace App\Controllers\admin;
 use CodeIgniter\Controller;
 use App\Models\admin\AdminUserModel;
 use App\Models\PlanModel;
+use App\Models\UserModel;
+
 use CodeIgniter\RESTful\ResourceController;
 class AdminController extends ResourceController
 {
     public function index()
     {
         
-        if (session()->get('isLoggedIn')) {
+        if (session()->get('isAdminLoggedIn')) {
             return view('admin/dashboard');
         }
         return redirect()->to('admin/login');
+    }
+    public function settings(){
+        return view('admin/settings');
+
     }
 
     public function login()
@@ -33,7 +39,7 @@ class AdminController extends ResourceController
         if ($user) {
             if (password_verify($password, $user['password'])) {
                 session()->set([
-                    'isLoggedIn' => true,
+                    'isAdminLoggedIn' => true,
                     'username' => $user['username']
                 ]);
                 return redirect()->to('/admin');
@@ -84,7 +90,7 @@ class AdminController extends ResourceController
     public function getPlans()
     {
         $planModel = new PlanModel();
-        $plans = $planModel->findAll();
+        $plans = $planModel->getActivePlans(); // Fetch only active plans
 
         return view('admin/plans/list', ['plans' => $plans]);
     }
@@ -95,5 +101,13 @@ class AdminController extends ResourceController
         $plans = $planModel->findAll();
 
         return view('admin/plans/create', ['plans' => $plans]);
+    }
+
+    public function getUsers(){
+        
+        $userModel = new UserModel();
+        $users = $userModel->findAll();
+
+        return view('admin/users/list', ['users' => $users]);
     }
 }
