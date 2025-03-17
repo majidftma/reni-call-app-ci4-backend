@@ -3,6 +3,9 @@
 namespace App\Controllers;
 
 use CodeIgniter\API\ResponseTrait;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use App\Models\UserModel;
 
 class OtpController extends BaseController
 {
@@ -43,7 +46,7 @@ class OtpController extends BaseController
     {
         $sessionId = $this->request->getVar('session_id'); // Get session_id from the request
         $otp = $this->request->getVar('otp'); // Get OTP from the request
-
+        $mobile = $this->request->getVar('mobile');
         if (!$sessionId || !$otp) {
             return $this->fail('Session ID and OTP are required', 400);
         }
@@ -56,10 +59,33 @@ class OtpController extends BaseController
         $data = json_decode($response->getBody(), true);
 
         if (isset($data['Status']) && $data['Status'] === 'Success') {
-            return $this->respond([
-                'message' => 'OTP verified successfully.',
-                'details' => $data,
-            ]);
+            // return $this->respond([
+            //     'message' => 'OTP verified successfully.',
+            //     'details' => $data,
+            // ]);
+             // Generate JWT Token
+            $userModel = new UserModel();
+            $user = $userModel->where('mobile', $mobile)->first();
+    
+            if ($user) {
+                // Update existing user
+                $userModel->update($user['id'], ['last_login' => date('Y-m-d H:i:s')]);
+            } else {
+                // Create new user
+                $userId = $userModel->insert(['mobile' => $mobile, 'created_at' => date('Y-m-d H:i:s')]);
+                $user = $userModel->find($userId);
+            }
+    
+            // Generate JWT Token
+            $key = getenv('JWT_SECRET'); // Use the secret key from .env
+            $payload = [
+                "id" => $user['id'],
+                "mobile" => $user['mobile'],
+                "exp" => time() + 3600 // Token expires in 1 hour
+            ];
+            $token = JWT::encode($payload, $key, 'HS256');
+    
+            return $this->respond(['message' => 'OTP verified', 'token' => $token, 'user' => $user]);
         }
 
         return $this->fail('Failed to verify OTP', 401);

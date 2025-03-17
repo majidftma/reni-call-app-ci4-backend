@@ -115,6 +115,10 @@
             <li><a href="<?php echo base_url('api/docs/user'); ?>">User Documentation</a></li>
             <li><a href="<?php echo base_url('api/docs/plan'); ?>">Plan Documentation</a></li>
             <li><a href="<?php echo base_url('api/docs/payment'); ?>">Payment Documentation</a></li>
+            <li><a href="<?php echo base_url('api/docs/language'); ?>">Language Documentation</a></li>
+            <li><a href="<?php echo base_url('api/docs/wallet'); ?>">Wallet Documentation</a></li>
+
+
 
 
             <!-- Add more links as needed -->

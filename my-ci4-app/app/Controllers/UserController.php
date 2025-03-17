@@ -54,6 +54,65 @@ class UserController extends ResourceController
         ]);
     }
 
+    public function createOrUpdateUser()
+    {
+        $walletModel = new WalletModel();
+        $userModel = new UserModel();
+        $mobile = $this->request->getVar('mobile');
+
+        if (!$mobile) {
+            return $this->fail('Mobile number is required', 400);
+        }
+        $user = $userModel->where('mobile', $mobile)->first();
+        $data = [
+            'name' => $this->request->getVar('name'),
+            'dob' => $this->request->getVar('dob'),
+            'preferred_language' => $this->request->getVar('preferred_language'),
+            'last_login' => date('Y-m-d H:i:s')
+        ];
+
+        if ($user) {
+            // Update existing user
+            $updated = $userModel->update($user['id'], $data);
+    
+            if (!$updated) {
+                return $this->fail('Update failed', 500);
+            }
+            $userId = $user['id'];
+            // return $userModel->find($user['id']);
+            if (!$userId) {
+                return $this->failServerError('Failed to create user.');
+            }
+    
+            $walletData = [
+                'user_id' => $userId,
+                'balance' => 100.00,
+            ];
+    
+            if (!$walletModel->insert($walletData)) {
+                $userModel->delete($userId);
+                return $this->failServerError('Failed to create wallet for the user.');
+            }
+    
+            return $this->respondCreated([
+                'message' => 'User and wallet Updated successfully.',
+                'user_id' => $userId,
+            ]);
+        } else {
+            // Create new user
+            $data['mobile'] = $mobile;
+            $data['row_creayedAt'] = date('Y-m-d H:i:s');
+            $userId = $userModel->insert($data);
+            // return $userModel->find($userId);
+            
+
+            return $this->respondCreated([
+                'message' => 'User and wallet created successfully.',
+                'user_id' => $userId,
+            ]);
+        }
+    }
+
     public function getUsers()
     {
         $userModel = new UserModel();

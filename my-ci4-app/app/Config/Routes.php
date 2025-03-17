@@ -13,6 +13,10 @@ $routes->get('api/docs/otp', 'DocsController::index');
 $routes->get('api/docs/user', 'DocsController::userDoc');
 $routes->get('api/docs/plan', 'DocsController::plansDoc');
 $routes->get('api/docs/payment', 'DocsController::paymentsDoc');
+$routes->get('api/docs/language', 'DocsController::languagesDoc');
+$routes->get('api/docs/wallet', 'DocsController::walletsDoc');
+
+
 
 
 $routes->group('admin', ['namespace' => 'App\Controllers\admin'], function ($routes) {
@@ -23,7 +27,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\admin'], function ($rou
     $routes->post('create', 'AdminController::createAdmin'); // Route to create an admin
 });
 
-$routes->group('admin', ['namespace' => 'App\Controllers', 'filter' => 'auth'], function ($routes) {
+$routes->group('admin', ['namespace' => 'App\Controllers', 'filter' => 'auth','jwt'], function ($routes) {
     $routes->get('dashboard', 'admin\AdminController::index');
     $routes->get('settings', 'admin\AdminController::settings');
 
@@ -45,6 +49,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers', 'filter' => 'auth'], 
 
 
 $routes->get('setup/create-admin', 'SetupController::createAdmin');
+$routes->post('api/create-or-update-user', 'UserController::createOrUpdateUser');
 
 
 $routes->group('api/languages', ['namespace' => 'App\Controllers'], function ($routes) {
@@ -54,12 +59,13 @@ $routes->group('api/languages', ['namespace' => 'App\Controllers'], function ($r
 });
 
 $routes->group('api/users', ['namespace' => 'App\Controllers'], function ($routes) {
+
     $routes->post('', 'UserController::create'); // Create a user
     $routes->get('', 'UserController::getUsers'); // Get all users
     $routes->get('(:num)', 'UserController::getUserById/$1'); // Get user by ID
 });
 
-$routes->group('api/plans', ['namespace' => 'App\Controllers'], function ($routes) {
+$routes->group('api/plans', ['namespace' => 'App\Controllers', 'filter' => 'jwt'], function ($routes) {
     $routes->post('', 'PlanController::createPlan'); // Create a new plan
     $routes->get('', 'PlanController::getPlans'); // Get all plans
     $routes->get('(:num)', 'PlanController::getPlanById/$1'); // Get a specific plan by ID
@@ -68,4 +74,13 @@ $routes->group('api/plans', ['namespace' => 'App\Controllers'], function ($route
 $routes->group('api', ['namespace' => 'App\Controllers'], function ($routes) {
     $routes->post('payment/create-order', 'PaymentController::createOrder');
     $routes->post('payment/verify', 'PaymentController::verifyPayment');
+});
+
+
+
+// Routes.php
+$routes->group('api/wallet', function ($routes) {
+    $routes->get('balance/(:num)', 'WalletController::getBalance/$1');
+    $routes->post('credit', 'WalletController::creditWallet');
+    $routes->post('debit', 'WalletController::debitWallet');
 });

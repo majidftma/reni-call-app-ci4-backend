@@ -23,4 +23,14 @@ class DocsController extends Controller
         return view('api-docs/paymentsController');
 
     }
+
+    public function languagesDoc(){
+        return view('api-docs/languagesController');
+
+    }
+
+    public function walletsDoc(){
+        return view('api-docs/walletController');
+
+    }
 }

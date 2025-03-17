@@ -1,87 +1,95 @@
 <?= $this->extend('api-docs/layouts/main') ?>
 
 <?= $this->section('content') ?>
+<div class="container">
 <h1>UserController API Documentation</h1>
-<p>The <strong>UserController</strong> provides APIs for user management, available under the base route <code>/api/users</code>. The responses are in JSON format.</p>
+        <p>This API provides endpoints for managing users, including creation, updating, and retrieval.</p>
+<!-- 
+        <h2>1. Create User</h2>
+        <div class="endpoint">
+            <strong>Endpoint:</strong> <code>POST /api/users</code><br>
+            <strong>Description:</strong> Creates a new user along with a wallet.<br>
+            <strong>Request Parameters:</strong>
+            <pre>{
+    "name": "John Doe",
+    "mobile": "9876543210",
+    "age": 1990-12-31,
+    "preferred_language": 1
+}</pre>
+            <strong>Response:</strong>
+            <pre>{
+    "message": "User and wallet created successfully.",
+    "user_id": 1
+}</pre>
+        </div>
+ -->
+        <h2>2. Create or Update User</h2>
+        <div class="endpoint">
+            <strong>Endpoint:</strong> <code>POST /api/create-or-update-user</code><br>
+            <strong>Description:</strong> Updates an existing user or creates a new one if the mobile number is not found.<br>
+            <strong>Request Parameters:</strong>
+            <pre>{
+    "mobile": "9876543210",
+    "name": "John Doe",
+    "dob": "1993-05-10",
+    "preferred_language": 1
+}</pre>
+            <strong>Response:</strong>
+            <pre>{
+    "message": "User and wallet created successfully.",
+    "user_id": 1
+}</pre>
+        </div>
 
-<hr>
+        <h2>3. Get All Users</h2>
+        <div class="endpoint">
+            <strong>Endpoint:</strong> <code>GET /api/users</code><br>
+            <strong>Description:</strong> Retrieves all users along with their preferred language.<br>
+            <strong>Response:</strong>
+            <pre>[{
+    "id": 1,
+    "name": "John Doe",
+    "mobile": "9876543210",
+    "dob": 1990-12-31,
+    "preferred_language": 1,
+    "language": "English"
+}]</pre>
+        </div>
 
-<h2>Endpoints</h2>
+        <h2>4. Get User by ID</h2>
+        <div class="endpoint">
+            <strong>Endpoint:</strong> <code>GET /api/users/{id}</code><br>
+            <strong>Description:</strong> Retrieves a user by their ID, including their preferred language.<br>
+            <strong>Response:</strong>
+            <pre>{
+    "id": 1,
+    "name": "John Doe",
+    "mobile": "9876543210",
+    "dob": 1990-12-31,
+    "preferred_language": 1,
+    "language": "English"
+}</pre>
+        </div>
 
-<h3>1. Create a User</h3>
-<p><strong>Endpoint:</strong> <code>POST /api/users</code></p>
-<p><strong>Description:</strong> Creates a new user and initializes a wallet with a default balance of 100.</p>
-<p><strong>Request Body:</strong></p>
-<pre><code>{
-  "name": "string (required, max_length: 255)",
-  "mobile": "string (required, max_length: 15, unique)",
-  "age": "integer (required, greater_than: 0)",
-  "preferred_language": "integer (required, greater_than: 0)"
-}</code></pre>
-<p><strong>Response:</strong></p>
-<pre><code>{
-  "message": "User and wallet created successfully.",
-  "user_id": "integer"
-}</code></pre>
-<p><strong>Errors:</strong></p>
-<ul>
-    <li><code>400 Bad Request</code> - Validation errors</li>
-    <li><code>404 Not Found</code> - Invalid preferred_language ID</li>
-    <li><code>500 Internal Server Error</code> - User or wallet creation failure</li>
-</ul>
+        
+    <h2>5. JWT Authentication</h2>
+        <div class="endpoint">
+            <strong>Description:</strong> This API uses JWT for authentication. Each request must include a valid token in the Authorization header.<br>
+            <strong>Authorization Header Format:</strong>
+            <pre>Authorization: Bearer &lt;your_token_here&gt;</pre>
+        </div>
 
-<hr>
+        <h2>6. Protected Routes</h2>
+        <div class="endpoint">
+            <strong>How it Works:</strong> The system verifies the token using a secret key stored in the environment variable <code>JWT_SECRET</code>.<br>
+            <strong>On Success:</strong> The decoded token's user information is accessible throughout the request lifecycle.<br>
+            <strong>On Failure:</strong> The API returns an error if the token is missing or invalid.<br>
+            <strong>Error Response:</strong>
+            <pre>{
+    "error": "Invalid token"
+}</pre>
+        </div>
+    </div>
 
-<h3>2. Get All Users</h3>
-<p><strong>Endpoint:</strong> <code>GET /api/users</code></p>
-<p><strong>Description:</strong> Retrieves a list of all users, including their preferred language names.</p>
-<p><strong>Response:</strong></p>
-<pre><code>[
-  {
-    "id": "integer",
-    "name": "string",
-    "mobile": "string",
-    "age": "integer",
-    "preferred_language": "integer",
-    "language": "string (name of preferred language)"
-  },
-  ...
-]</code></pre>
-<p><strong>Errors:</strong></p>
-<ul>
-    <li><code>404 Not Found</code> - No users found</li>
-</ul>
-
-<hr>
-
-<h3>3. Get User by ID</h3>
-<p><strong>Endpoint:</strong> <code>GET /api/users/{id}</code></p>
-<p><strong>Description:</strong> Retrieves a single user by their ID, including their preferred language name.</p>
-<p><strong>Path Parameter:</strong></p>
-<ul>
-    <li><code>id</code> - <em>integer</em> (required)</li>
-</ul>
-<p><strong>Response:</strong></p>
-<pre><code>{
-  "id": "integer",
-  "name": "string",
-  "mobile": "string",
-  "age": "integer",
-  "preferred_language": "integer",
-  "language": "string (name of preferred language)"
-}</code></pre>
-<p><strong>Errors:</strong></p>
-<ul>
-    <li><code>404 Not Found</code> - User with the given ID not found</li>
-</ul>
-
-<hr>
-
-<h2>Notes</h2>
-<ul>
-    <li>The API enforces strict validation rules for input data.</li>
-    <li>The `preferred_language` field corresponds to the `id` in the `LanguageModel`.</li>
-    <li>Wallets are automatically initialized for new users with a default balance of 100.</li>
-</ul>
-
+</div>
 <?= $this->endSection() ?>
