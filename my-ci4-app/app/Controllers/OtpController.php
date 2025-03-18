@@ -42,7 +42,7 @@ class OtpController extends BaseController
     }
 
     // Function to verify OTP
-    public function verifyOtp()
+  /*  public function verifyOtp()
     {
         $sessionId = $this->request->getVar('session_id'); // Get session_id from the request
         $otp = $this->request->getVar('otp'); // Get OTP from the request
@@ -86,6 +86,45 @@ class OtpController extends BaseController
             $token = JWT::encode($payload, $key, 'HS256');
     
             return $this->respond(['message' => 'OTP verified', 'token' => $token, 'user' => $user]);
+        }
+
+        return $this->fail('Failed to verify OTP', 401);
+    } */
+
+    public function verifyOtp()
+    {
+        $sessionId = $this->request->getVar('session_id');
+        $otp = $this->request->getVar('otp');
+        $mobile = $this->request->getVar('mobile');
+
+        if (!$sessionId || !$otp) {
+            return $this->fail('Session ID and OTP are required', 400);
+        }
+
+        $url = "{$this->baseUrl}/{$this->apiKey}/SMS/VERIFY/{$sessionId}/{$otp}";
+        $response = service('curlrequest')->request('GET', $url);
+        $data = json_decode($response->getBody(), true);
+
+        if (isset($data['Status']) && $data['Status'] === 'Success') {
+            $userModel = new UserModel();
+            $user = $userModel->where('mobile', $mobile)->first();
+
+            if ($user) {
+                $userModel->update($user['id'], ['last_login' => date('Y-m-d H:i:s')]);
+            } else {
+                $userId = $userModel->insert(['mobile' => $mobile, 'created_at' => date('Y-m-d H:i:s')]);
+                $user = $userModel->find($userId);
+            }
+
+            // Generate Tokens via AuthController
+            $authController = new AuthController();
+            $tokens = $authController->generateTokens($user['id'], $user['mobile']);
+
+            return $this->respond([
+                'message' => 'OTP verified',
+                'tokens' => $tokens,
+                'user' => $user
+            ]);
         }
 
         return $this->fail('Failed to verify OTP', 401);

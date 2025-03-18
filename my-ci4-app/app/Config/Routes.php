@@ -17,6 +17,9 @@ $routes->get('api/docs/language', 'DocsController::languagesDoc');
 $routes->get('api/docs/wallet', 'DocsController::walletsDoc');
 
 
+// $routes->post('auth/refresh-token', 'AuthController::refreshToken');
+$routes->post('/auth/refresh-tokens', 'AuthController::updateTokensWithRefreshToken');
+
 
 
 $routes->group('admin', ['namespace' => 'App\Controllers\admin'], function ($routes) {
