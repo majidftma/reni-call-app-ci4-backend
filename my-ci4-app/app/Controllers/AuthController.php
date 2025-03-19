@@ -67,7 +67,7 @@ class AuthController extends BaseController
             if (!$user) {
                 return $this->fail('User not found', 404);
             }else{
-                return $this->fail('User  found'.$userId.''.$refreshToken.''.date('Y-m-d H:i:s'), 404);
+                // return $this->fail('User  found'.$userId.''.$refreshToken.''.date('Y-m-d H:i:s'), 404);
 
             }
 
@@ -100,7 +100,7 @@ class AuthController extends BaseController
             $newRefreshToken = JWT::encode($newRefreshTokenPayload, $key, 'HS256');
 
             // Update Refresh Token in Database
-            $userTokenModel->update($tokenEntry['id'], [
+            $userTokenModel->update($tokenEntry['user_id'], [
                 'refresh_token' => $newRefreshToken,
                 'expires_at' => date('Y-m-d H:i:s', time() + 2592000)
             ]);
@@ -111,7 +111,7 @@ class AuthController extends BaseController
             ]);
 
         } catch (\Exception $e) {
-            return $this->fail('Invalid refresh token', 401);
+            return $this->fail('Invalid refresh token'.$e, 401);
         }
     }
 }

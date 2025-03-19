@@ -16,7 +16,6 @@ $routes->get('api/docs/payment', 'DocsController::paymentsDoc');
 $routes->get('api/docs/language', 'DocsController::languagesDoc');
 $routes->get('api/docs/wallet', 'DocsController::walletsDoc');
 
-
 // $routes->post('auth/refresh-token', 'AuthController::refreshToken');
 $routes->post('/auth/refresh-tokens', 'AuthController::updateTokensWithRefreshToken');
 
@@ -62,6 +61,7 @@ $routes->group('api/languages', ['namespace' => 'App\Controllers'], function ($r
 });
 
 $routes->group('api/users', ['namespace' => 'App\Controllers'], function ($routes) {
+    $routes->post('get-user', 'UserController::getUser');
 
     $routes->post('', 'UserController::create'); // Create a user
     $routes->get('', 'UserController::getUsers'); // Get all users

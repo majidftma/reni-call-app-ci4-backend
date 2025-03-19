@@ -89,6 +89,38 @@
     "error": "Invalid token"
 }</pre>
         </div>
+
+        <h2>7. Get User Details (Authenticated)</h2>
+<div class="endpoint">
+    <strong>Endpoint:</strong> <code>POST /api/users/get-user</code><br>
+    <strong>Description:</strong> Retrieves the authenticated user's details using a JWT token.<br>
+    <strong>Headers:</strong>
+    <pre>
+Authorization: Bearer {your_jwt_token}
+    </pre>
+    <strong>Request Parameters:</strong> None (Token-based authentication).<br>
+    <strong>Response (Success):</strong>
+    <pre>{
+    "id": 1,
+    "name": "John Doe",
+    "mobile": "9876543210",
+    "dob": 1990-12-30,
+    "preferred_language": 1,
+    "language": "English"
+}</pre>
+    <strong>Response (Error - Missing Token):</strong>
+    <pre>{
+    "status": 401,
+    "error": "Access token is required"
+}</pre>
+    <strong>Response (Error - Invalid Token):</strong>
+    <pre>{
+    "status": 401,
+    "error": "Invalid or expired token"
+}</pre>
+</div>
+
+
     </div>
 
 </div>

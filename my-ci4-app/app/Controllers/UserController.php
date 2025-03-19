@@ -6,10 +6,21 @@ use App\Models\UserModel;
 use App\Models\WalletModel;
 use App\Models\LanguageModel;
 use CodeIgniter\RESTful\ResourceController;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use App\Models\UserTokenModel;
 
 class UserController extends ResourceController
 {
     protected $format = 'json';
+    protected $walletModel;
+    protected $userModel;
+
+    public function __construct()
+    {
+        $this->walletModel = new WalletModel();
+        $this->userModel = new UserModel();
+    }
 
     public function create()
     {
@@ -147,5 +158,30 @@ class UserController extends ResourceController
         $user['language'] = $language ? $language['name'] : null;
 
         return $this->respond($user);
+    }
+
+    public function getUser()
+    {
+        $authHeader = $this->request->getHeaderLine('Authorization');
+
+        if (!$authHeader) {
+            return $this->failUnauthorized('Access token is required');
+        }
+
+        $token = str_replace('Bearer ', '', $authHeader);
+
+        try {
+            $decoded = JWT::decode($token, new Key(getenv('JWT_SECRET'), 'HS256'));
+            $user = $this->userModel->find($decoded->id);
+
+
+            if (!$user) {
+                return $this->failNotFound('User not found');
+            }
+
+            return $this->respond($user);
+        } catch (\Exception $e) {
+            return $this->failUnauthorized('Invalid or expired token');
+        }
     }
 }
