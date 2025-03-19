@@ -137,6 +137,9 @@ class UserController extends ResourceController
 
         // Add language names to each user
         foreach ($users as &$user) {
+            if(!$user['preferred_language']){
+                continue;
+            }
             $language = $languageModel->find($user['preferred_language']);
             $user['language'] = $language ? $language['name'] : null;
         }
@@ -182,6 +185,38 @@ class UserController extends ResourceController
             return $this->respond($user);
         } catch (\Exception $e) {
             return $this->failUnauthorized('Invalid or expired token');
+        }
+    }
+
+    public function updateOnlineStatus()
+    {
+        $authHeader = $this->request->getHeaderLine('Authorization');
+
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            return $this->fail('Authorization token is required', 401);
+        }
+
+        $accessToken = $matches[1];
+        $key = getenv('JWT_SECRET');
+
+        try {
+            $decoded = JWT::decode($accessToken, new Key($key, 'HS256'));
+            $userId = $decoded->id;
+
+            $status = $this->request->getVar('status');
+            if (!in_array($status, [0, 1])) {
+                return $this->fail('Invalid status value. Use 1 for online and 0 for offline.', 400);
+            }
+
+            $userModel = new UserModel();
+            if ($userModel->updateOnlineStatus($userId, $status)) {
+                return $this->respond(['message' => 'Online status updated successfully.']);
+            }
+
+            return $this->fail('Failed to update online status', 500);
+
+        } catch (\Exception $e) {
+            return $this->fail('Invalid access token', 401);
         }
     }
 }
