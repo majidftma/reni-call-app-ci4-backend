@@ -62,7 +62,9 @@ $routes->group('api/languages', ['namespace' => 'App\Controllers'], function ($r
 
 $routes->group('api/users', ['namespace' => 'App\Controllers'], function ($routes) {
     $routes->post('get-user', 'UserController::getUser');
+
     $routes->post('update-online-status', 'UserController::updateOnlineStatus');
+
 
     $routes->post('', 'UserController::create'); // Create a user
     $routes->get('', 'UserController::getUsers'); // Get all users

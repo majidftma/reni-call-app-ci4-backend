@@ -15,11 +15,15 @@ class UserController extends ResourceController
     protected $format = 'json';
     protected $walletModel;
     protected $userModel;
+    protected $languageModel;
 
     public function __construct()
     {
         $this->walletModel = new WalletModel();
         $this->userModel = new UserModel();
+        $this->languageModel = new LanguageModel();
+
+
     }
 
     public function create()
@@ -142,6 +146,10 @@ class UserController extends ResourceController
             }
             $language = $languageModel->find($user['preferred_language']);
             $user['language'] = $language ? $language['name'] : null;
+
+            $wallet = $this->walletModel->where('user_id', $user['id'])->first();
+            $user['balance'] = $wallet['balance'];
+
         }
 
         return $this->respond($users);
@@ -176,6 +184,13 @@ class UserController extends ResourceController
         try {
             $decoded = JWT::decode($token, new Key(getenv('JWT_SECRET'), 'HS256'));
             $user = $this->userModel->find($decoded->id);
+
+            $language = $this->languageModel->find($user['preferred_language']);
+            $user['language'] = $language ? $language['name'] : null;
+
+            $wallet = $this->walletModel->where('user_id', $user['id'])->first();
+            $user['balance'] = $wallet['balance'];
+
 
 
             if (!$user) {
