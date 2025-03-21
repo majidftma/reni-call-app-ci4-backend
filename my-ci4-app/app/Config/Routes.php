@@ -15,6 +15,8 @@ $routes->get('api/docs/plan', 'DocsController::plansDoc');
 $routes->get('api/docs/payment', 'DocsController::paymentsDoc');
 $routes->get('api/docs/language', 'DocsController::languagesDoc');
 $routes->get('api/docs/wallet', 'DocsController::walletsDoc');
+$routes->get('api/docs/teleCaller', 'DocsController::teleCallerDoc');
+
 
 // $routes->post('auth/refresh-token', 'AuthController::refreshToken');
 $routes->post('/auth/refresh-tokens', 'AuthController::updateTokensWithRefreshToken');
@@ -89,4 +91,8 @@ $routes->group('api/wallet', function ($routes) {
     $routes->get('balance/(:num)', 'WalletController::getBalance/$1');
     $routes->post('credit', 'WalletController::creditWallet');
     $routes->post('debit', 'WalletController::debitWallet');
+});
+$routes->group('api/telecaller', function ($routes) {
+    $routes->post('create', 'WalletController::createTelecaller');
+    $routes->get('all', 'WalletController::getAllTelecallers');
 });

@@ -117,6 +117,8 @@
             <li><a href="<?php echo base_url('api/docs/payment'); ?>">Payment Documentation</a></li>
             <li><a href="<?php echo base_url('api/docs/language'); ?>">Language Documentation</a></li>
             <li><a href="<?php echo base_url('api/docs/wallet'); ?>">Wallet Documentation</a></li>
+            <li><a href="<?php echo base_url('api/docs/teleCaller'); ?>">TeleCaller Documentation</a></li>
+
 
 
 

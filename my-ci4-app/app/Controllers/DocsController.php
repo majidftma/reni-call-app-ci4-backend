@@ -33,4 +33,9 @@ class DocsController extends Controller
         return view('api-docs/walletController');
 
     }
+
+    public function teleCallerDoc(){
+        return view('api-docs/teleCallerController');
+
+    }
 }
