@@ -184,22 +184,37 @@ class UserController extends ResourceController
         try {
             $decoded = JWT::decode($token, new Key(getenv('JWT_SECRET'), 'HS256'));
             $user = $this->userModel->find($decoded->id);
+            if (!$user) {
+                return $this->failNotFound('User not found');
+            }
+            if(!$user['preferred_language']){
+                return $this->fail('User Profile not completed, Add language', 500);
+
+
+            }
 
             $language = $this->languageModel->find($user['preferred_language']);
-            $user['language'] = $language ? $language['name'] : null;
+
+
+            // $user['language'] = $language ? $language['name'] : null;
+            $user['language'] = $language['name'] ?? null;
+
 
             $wallet = $this->walletModel->where('user_id', $user['id'])->first();
+            if(!$wallet){
+                return $this->fail('User Profile not completed, Wallet details not found', 500);
+
+
+            }
             $user['balance'] = $wallet['balance'];
 
 
 
-            if (!$user) {
-                return $this->failNotFound('User not found');
-            }
+          
 
             return $this->respond($user);
         } catch (\Exception $e) {
-            return $this->failUnauthorized('Invalid or expired token');
+            return $this->failUnauthorized('Invalid or expired token'.$e->getMessage());
         }
     }
 
