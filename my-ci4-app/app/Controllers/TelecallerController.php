@@ -28,12 +28,12 @@ class TelecallerController extends ResourceController
     public function createTelecaller()
     {
         $data = [
-            'mobile' => $this->request->getPost('mobile'),
-            'name' => $this->request->getPost('name'),
-            'gender' => $this->request->getPost('gender'),
-            'accountnumber' => $this->request->getPost('accountnumber'),
-            'ifsc' => $this->request->getPost('ifsc'),
-            'preferred_language' => $this->request->getPost('preferred_language'),
+            'mobile' => $this->request->getVar('mobile'),
+            'name' => $this->request->getVar('name'),
+            'gender' => $this->request->getVar('gender'),
+            'accountnumber' => $this->request->getVar('accountnumber'),
+            'ifsc' => $this->request->getVar('ifsc'),
+            'preferred_language' => $this->request->getVar('preferred_language'),
         ];
 
         if ($this->telecallerModel->insert($data)) {
