@@ -93,6 +93,6 @@ $routes->group('api/wallet', function ($routes) {
     $routes->post('debit', 'WalletController::debitWallet');
 });
 $routes->group('api/telecaller', function ($routes) {
-    $routes->post('create', 'WalletController::createTelecaller');
-    $routes->get('all', 'WalletController::getAllTelecallers');
+    $routes->post('create', 'TelecallerController::createTelecaller');
+    $routes->get('all', 'TelecallerController::getAllTelecallers');
 });
