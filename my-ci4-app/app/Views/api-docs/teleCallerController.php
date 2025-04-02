@@ -26,6 +26,12 @@
                 <td>Mobile number of the telecaller</td>
             </tr>
             <tr>
+                <td>user_id</td>
+                <td>int</td>
+                <td>Yes</td>
+                <td>User id of telecaller - fetched from response of verify-otp</td>
+            </tr>
+            <tr>
                 <td>name</td>
                 <td>String</td>
                 <td>Yes</td>

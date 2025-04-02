@@ -27,7 +27,7 @@ class LanguageController extends ResourceController
             return $this->respondCreated(['id' => $id, 'message' => 'Language created successfully']);
         }
 
-        return $this->fail('Failed to create language');
+        return $this->fail('Failed to create language', 500);
     }
 
     // GET: Fetch all languages

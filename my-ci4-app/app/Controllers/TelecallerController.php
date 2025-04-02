@@ -34,12 +34,14 @@ class TelecallerController extends ResourceController
             'accountnumber' => $this->request->getVar('accountnumber'),
             'ifsc' => $this->request->getVar('ifsc'),
             'preferred_language' => $this->request->getVar('preferred_language'),
+            'user_id' => $this->request->getVar('user_id'),
+
         ];
 
         if ($this->telecallerModel->insert($data)) {
             return $this->respondCreated(['message' => 'Telecaller created successfully']);
         } else {
-            return $this->fail('Failed to create telecaller');
+            return $this->fail('Failed to create telecaller', 500);
         }
     }
 

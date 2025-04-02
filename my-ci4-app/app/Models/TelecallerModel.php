@@ -7,6 +7,6 @@ class TelecallerModel extends Model
 {
     protected $table = 'telecallers';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['mobile', 'name', 'gender', 'accountnumber', 'ifsc', 'preferred_language'];
+    protected $allowedFields = ['mobile', 'name', 'gender', 'accountnumber', 'ifsc', 'preferred_language','user_id'];
 }
 
