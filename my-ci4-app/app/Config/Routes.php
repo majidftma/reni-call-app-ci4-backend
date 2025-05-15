@@ -6,6 +6,12 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
+$routes->get('/terms-and-conditions', 'Home::terms');
+$routes->get('/terms-conditions', 'Home::terms');
+
+$routes->get('/privacy-policy', 'Home::privacy');
+$routes->get('/about-us', 'Home::about');
+
 
 $routes->post('send-otp', 'OtpController::sendOtp');
 $routes->post('verify-otp', 'OtpController::verifyOtp');
@@ -96,3 +102,7 @@ $routes->group('api/telecaller', function ($routes) {
     $routes->post('create', 'TelecallerController::createTelecaller');
     $routes->get('all', 'TelecallerController::getAllTelecallers');
 });
+
+
+$routes->post('/signal', 'WebrtcController::sendSignal');
+$routes->get('/signal/(:segment)', 'WebrtcController::getSignal/$1');
