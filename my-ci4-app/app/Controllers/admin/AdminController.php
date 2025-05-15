@@ -31,8 +31,8 @@ class AdminController extends ResourceController
     public function authenticate()
     {
         $model = new AdminUserModel();
-        $username = $this->request->getPost('username');
-        $password = $this->request->getPost('password');
+        $username = $this->request->getVar('username');
+        $password = $this->request->getVar('password');
 
         $user = $model->where('username', $username)->first();
 
